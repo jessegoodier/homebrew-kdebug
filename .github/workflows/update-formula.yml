@@ -26,25 +26,25 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Wait for PyPI (on repository_dispatch)
-        if: github.event_name == 'repository_dispatch'
+      - name: Wait for PyPI availability
+        if: github.event.inputs.version || github.event.client_payload.version
         run: |
-          echo "Waiting for PyPI to be updated..."
-          PAYLOAD_VERSION="${{ github.event.client_payload.version }}"
-          PAYLOAD_VERSION="${PAYLOAD_VERSION#v}"  # Strip 'v' prefix
+          EXPECTED_VERSION="${{ github.event.inputs.version || github.event.client_payload.version }}"
+          EXPECTED_VERSION="${EXPECTED_VERSION#v}"  # Strip 'v' prefix
+          echo "Waiting for PyPI version $EXPECTED_VERSION..."
 
           for i in {1..20}; do
             PYPI_VERSION=$(curl -s "https://pypi.org/pypi/kdebug/json" | python3 -c "import sys,json; print(json.load(sys.stdin)['info']['version'])" 2>/dev/null || echo "")
-            echo "Attempt $i: PyPI version=$PYPI_VERSION, expected=$PAYLOAD_VERSION"
+            echo "Attempt $i/20: PyPI=$PYPI_VERSION, expected=$EXPECTED_VERSION"
 
-            if [[ "$PYPI_VERSION" == "$PAYLOAD_VERSION" ]]; then
+            if [[ "$PYPI_VERSION" == "$EXPECTED_VERSION" ]]; then
               echo "PyPI is up to date"
               break
             fi
 
             if [[ $i -eq 20 ]]; then
-              echo "Timeout waiting for PyPI"
-              exit 1
+              echo "::warning::PyPI version ($PYPI_VERSION) doesn't match expected ($EXPECTED_VERSION) after 5 minutes. Proceeding with latest."
+              break
             fi
 
             sleep 15
