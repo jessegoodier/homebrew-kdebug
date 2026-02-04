@@ -11,6 +11,8 @@ class Kdebug < Formula
 
   def install
     virtualenv_install_with_resources
+
+    generate_completions_from_executable(bin/"kdebug", "--completions")
   end
 
   test do

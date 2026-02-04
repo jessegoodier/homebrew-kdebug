@@ -69,6 +69,8 @@ def generate_formula(info: dict) -> str:
 
   def install
     virtualenv_install_with_resources
+
+    generate_completions_from_executable(bin/"kdebug", "--completions")
   end
 
   test do
