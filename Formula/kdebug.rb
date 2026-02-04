@@ -1,8 +1,8 @@
 class Kdebug < Formula
   desc "Universal Kubernetes Debug Container Utility"
-  homepage "https://github.com/jessegoodier/kdebug"
-  url "https://github.com/jessegoodier/kdebug/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "" # Will be calculated when you create a release
+  homepage "https://github.com/jessegoodier/homebrew-kdebug"
+  url "https://github.com/jessegoodier/homebrew-kdebug/archive/refs/tags/v0.1.0.tar.gz"
+  sha256 "1aab0c4769cc3b00d8dc93e9e403537b03511e82e68bd598c9d93967cc389e7d"
   license "MIT"
   version "0.1.0"
 
