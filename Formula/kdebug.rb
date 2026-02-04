@@ -1,21 +1,19 @@
 class Kdebug < Formula
-  desc "Universal Kubernetes Debug Container Utility"
-  homepage "https://github.com/jessegoodier/homebrew-kdebug"
-  url "https://github.com/jessegoodier/kdebug/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "3d439253304d37ca32b0e6cf42a11c5f796dedf33b77e49c8abcc91e9ac21c60"
-  license "MIT"
-  version "0.1.0"
+  include Language::Python::Virtualenv
 
-  depends_on "python@3.11"
-  depends_on "kubectl"
+  desc "Universal Kubernetes Debug Container Utility"
+  homepage "https://github.com/jessegoodier/kdebug"
+  url "https://files.pythonhosted.org/packages/source/k/kdebug/kdebug-0.1.0.tar.gz"
+  sha256 "PLACEHOLDER"
+  license "MIT"
+
+  depends_on "python@3.13"
 
   def install
-    bin.install "bin/kdebug"
+    virtualenv_install_with_resources
   end
 
   test do
-    assert_match "Universal Kubernetes Debug Container Utility", shell_output("#{bin}/kdebug --help")
+    assert_match "kdebug", shell_output("#{bin}/kdebug --version")
   end
 end
-
-# Made with Bob
