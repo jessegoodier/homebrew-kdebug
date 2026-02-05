@@ -3,8 +3,8 @@ class Kdebug < Formula
 
   desc "Universal Kubernetes Debug Container Utility"
   homepage "https://github.com/jessegoodier/kdebug"
-  url "https://files.pythonhosted.org/packages/52/78/40f831751fa455029d031789ee8941a7f7b6cbdb7208822b282979ba613a/kdebug-0.2.3.tar.gz"
-  sha256 "18c61938f1b411694c791d07385d64bc0f811d5f1c1a1cb8b1edf2a536cdb7f7"
+  url "https://files.pythonhosted.org/packages/9d/b3/f25d17243505769bcf417a1bd8e3e9ec25b688f382146955a23b0dfa978a/kdebug-0.3.0.tar.gz"
+  sha256 "033582953b55271c22b8223cd40de1e59cc7e7d9047597443e96edc4c5126ab1"
   license "MIT"
 
   depends_on "python@3.13"
