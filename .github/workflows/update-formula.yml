@@ -86,8 +86,32 @@ jobs:
             --output-formula Formula/kdebug.rb
 
       - name: Test formula syntax
+        id: syntax-check
         if: steps.check-update.outputs.update-needed == 'true'
         run: ruby -c Formula/kdebug.rb
+
+      - name: Set up Homebrew tap
+        if: steps.check-update.outputs.update-needed == 'true'
+        run: |
+          BREW_TAP="$(brew --repository)/Library/Taps/jessegoodier/homebrew-kdebug"
+          mkdir -p "$(dirname "$BREW_TAP")"
+          ln -s "$GITHUB_WORKSPACE" "$BREW_TAP"
+
+      - name: Install formula
+        id: brew-install
+        if: steps.check-update.outputs.update-needed == 'true'
+        run: brew install --build-from-source jessegoodier/kdebug/kdebug
+
+      - name: Test formula
+        id: brew-test
+        if: steps.check-update.outputs.update-needed == 'true'
+        run: brew test jessegoodier/kdebug/kdebug
+
+      - name: Audit formula
+        id: brew-audit
+        if: steps.check-update.outputs.update-needed == 'true'
+        continue-on-error: true
+        run: brew audit --formula jessegoodier/kdebug/kdebug
 
       - name: Commit and push
         if: steps.check-update.outputs.update-needed == 'true'
@@ -102,10 +126,91 @@ jobs:
           git push
 
       - name: Summary
+        if: always()
         run: |
           VERSION="${{ steps.version-info.outputs.version }}"
-          if [[ "${{ steps.check-update.outputs.update-needed }}" == "true" ]]; then
-            echo "### Updated kdebug to $VERSION" >> $GITHUB_STEP_SUMMARY
-          else
-            echo "### Already at version $VERSION" >> $GITHUB_STEP_SUMMARY
+          UPDATE_NEEDED="${{ steps.check-update.outputs.update-needed }}"
+
+          echo "## Homebrew Formula: kdebug" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "$UPDATE_NEEDED" != "true" ]]; then
+            echo "Already at version \`$VERSION\` — no update needed." >> $GITHUB_STEP_SUMMARY
+            exit 0
           fi
+
+          # --- Formula details ---
+          echo "### Formula Details" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Property | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|-------|" >> $GITHUB_STEP_SUMMARY
+
+          if [[ -f Formula/kdebug.rb ]]; then
+            DESC=$(grep -oP 'desc "\K[^"]+' Formula/kdebug.rb || echo "N/A")
+            HOMEPAGE=$(grep -oP 'homepage "\K[^"]+' Formula/kdebug.rb || echo "N/A")
+            URL=$(grep -oP 'url "\K[^"]+' Formula/kdebug.rb || echo "N/A")
+            SHA=$(grep -oP 'sha256 "\K[^"]+' Formula/kdebug.rb || echo "N/A")
+            LICENSE=$(grep -oP 'license "\K[^"]+' Formula/kdebug.rb || echo "N/A")
+            PYTHON_DEP=$(grep -oP 'depends_on "\K[^"]+' Formula/kdebug.rb || echo "N/A")
+
+            echo "| **Version** | \`$VERSION\` |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Description** | $DESC |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Homepage** | [$HOMEPAGE]($HOMEPAGE) |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Source** | [Download]($URL) |" >> $GITHUB_STEP_SUMMARY
+            echo "| **SHA256** | \`${SHA:0:16}…\` |" >> $GITHUB_STEP_SUMMARY
+            echo "| **License** | $LICENSE |" >> $GITHUB_STEP_SUMMARY
+            echo "| **Dependency** | \`$PYTHON_DEP\` |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # --- Formula methods ---
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Formula Methods" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Method | Operation |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-----------|" >> $GITHUB_STEP_SUMMARY
+
+          awk '
+          /def install/,/^  end/ {
+            if ($0 !~ /def install/ && $0 !~ /^  end/) {
+              gsub(/^[[:space:]]+/, "")
+              printf "| `install` | `%s` |\n", $0
+            }
+          }
+          /test do/,/^  end/ {
+            if ($0 !~ /test do/ && $0 !~ /^  end/) {
+              gsub(/^[[:space:]]+/, "")
+              printf "| `test` | `%s` |\n", $0
+            }
+          }
+          ' Formula/kdebug.rb >> $GITHUB_STEP_SUMMARY
+
+          # --- Test results ---
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          status_icon() {
+            case "$1" in
+              success) echo "pass" ;;
+              failure) echo "FAIL" ;;
+              skipped) echo "skip" ;;
+              *) echo "warn" ;;
+            esac
+          }
+
+          echo "| Test | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Ruby syntax check | \`$(status_icon "${{ steps.syntax-check.outcome }}")\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| brew install --build-from-source | \`$(status_icon "${{ steps.brew-install.outcome }}")\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| brew test | \`$(status_icon "${{ steps.brew-test.outcome }}")\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| brew audit | \`$(status_icon "${{ steps.brew-audit.outcome }}")\` |" >> $GITHUB_STEP_SUMMARY
+
+          # --- Formula source ---
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "<details>" >> $GITHUB_STEP_SUMMARY
+          echo "<summary>Formula source</summary>" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```ruby' >> $GITHUB_STEP_SUMMARY
+          cat Formula/kdebug.rb >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "</details>" >> $GITHUB_STEP_SUMMARY
