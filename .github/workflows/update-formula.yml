@@ -78,6 +78,18 @@ jobs:
             echo "update-needed=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Set up Homebrew
+        if: steps.check-update.outputs.update-needed == 'true'
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Set up Homebrew tap
+        if: steps.check-update.outputs.update-needed == 'true'
+        run: |
+          BREW_TAP="$(brew --repository)/Library/Taps/jessegoodier/homebrew-kdebug"
+          mkdir -p "$(dirname "$BREW_TAP")"
+          rm -rf "$BREW_TAP"
+          ln -s "$GITHUB_WORKSPACE" "$BREW_TAP"
+
       - name: Generate formula
         if: steps.check-update.outputs.update-needed == 'true'
         run: |
@@ -90,32 +102,27 @@ jobs:
         if: steps.check-update.outputs.update-needed == 'true'
         run: ruby -c Formula/kdebug.rb
 
-      - name: Set up Homebrew
-        if: steps.check-update.outputs.update-needed == 'true'
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Set up Homebrew tap
-        if: steps.check-update.outputs.update-needed == 'true'
-        run: |
-          BREW_TAP="$(brew --repository)/Library/Taps/jessegoodier/homebrew-kdebug"
-          mkdir -p "$(dirname "$BREW_TAP")"
-          ln -s "$GITHUB_WORKSPACE" "$BREW_TAP"
-
       - name: Install formula
         id: brew-install
         if: steps.check-update.outputs.update-needed == 'true'
         run: brew install --build-from-source jessegoodier/kdebug/kdebug
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
 
       - name: Test formula
         id: brew-test
         if: steps.check-update.outputs.update-needed == 'true'
         run: brew test jessegoodier/kdebug/kdebug
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
 
       - name: Audit formula
         id: brew-audit
         if: steps.check-update.outputs.update-needed == 'true'
         continue-on-error: true
         run: brew audit --formula jessegoodier/kdebug/kdebug
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
 
       - name: Commit and push
         if: steps.check-update.outputs.update-needed == 'true'

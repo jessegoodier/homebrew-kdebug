@@ -6,27 +6,17 @@ This repository contains the brew tap for kdebug, please see [kdebug](https://gi
 
 ### Using Homebrew (Recommended)
 
-#### Option 1: Install from this tap (local development)
-
-
 ```bash
-# Add the tap
+# Add the tap and install
 brew tap jessegoodier/kdebug
-
-# Install kdebug
 brew install kdebug
 ```
 
-### Manual Installation
+### Install from a local clone of this tap
 
 ```bash
-# Clone the repository
-git clone https://github.com/jessegoodier/kdebug.git
-cd kdebug
-
-# Make executable and add to PATH
-chmod +x bin/kdebug
-sudo ln -s $(pwd)/bin/kdebug /usr/local/bin/kdebug
+git clone https://github.com/jessegoodier/homebrew-kdebug.git
+brew install --formula homebrew-kdebug/Formula/kdebug.rb
 ```
 
 ## License
