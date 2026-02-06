@@ -139,6 +139,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Create release
+        if: steps.check-update.outputs.update-needed == 'true'
+        run: |
+          VERSION="${{ steps.version-info.outputs.version }}"
+          gh release create "v${VERSION}" \
+            --title "v${VERSION}" \
+            --notes "Update kdebug formula to ${VERSION}" \
+            --target main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Summary
         if: always()
         run: |
