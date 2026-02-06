@@ -134,7 +134,7 @@ jobs:
 
           git add Formula/kdebug.rb scripts/
           git commit -m "Update kdebug to $VERSION"
-          git push
+          git push origin main
 
       - name: Summary
         if: always()
