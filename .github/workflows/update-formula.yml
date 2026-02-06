@@ -90,6 +90,10 @@ jobs:
         if: steps.check-update.outputs.update-needed == 'true'
         run: ruby -c Formula/kdebug.rb
 
+      - name: Set up Homebrew
+        if: steps.check-update.outputs.update-needed == 'true'
+        uses: Homebrew/actions/setup-homebrew@master
+
       - name: Set up Homebrew tap
         if: steps.check-update.outputs.update-needed == 'true'
         run: |
