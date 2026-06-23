@@ -3,15 +3,15 @@ class Kdebug < Formula
 
   desc "Universal Kubernetes Debug Container Utility"
   homepage "https://github.com/jessegoodier/kdebug"
-  url "https://files.pythonhosted.org/packages/de/3c/b3c014648ceebb20dd51c77ab1ce8fbbad9716be830a58be09a5833d9d8c/kdebug-0.6.9.tar.gz"
-  sha256 "f6eca60666dbf7d278e57eca1968c47a88223d283df3f1dff52f24a6a6f93e0e"
+  url "https://files.pythonhosted.org/packages/12/24/c49f8d466f4e878e92d301a526c96adbc0fd26de43823ed543e6f102bae1/kdebug-0.6.10.tar.gz"
+  sha256 "0b30ed2767077533b0566c51d7ceb5383a782db5614dae62f411cb56996fcab4"
   license "MIT"
 
   depends_on "python@3.13"
 
   resource "markdown-it-py" do
-    url "https://files.pythonhosted.org/packages/5b/f5/4ec618ed16cc4f8fb3b701563655a69816155e79e24a17b651541804721d/markdown_it_py-4.0.0.tar.gz"
-    sha256 "cb0a2b4aa34f932c007117b194e945bd74e0ec24133ceb5bac59009cda1cb9f3"
+    url "https://files.pythonhosted.org/packages/06/ff/7841249c247aa650a76b9ee4bbaeae59370dc8bfd2f6c01f3630c35eb134/markdown_it_py-4.2.0.tar.gz"
+    sha256 "04a21681d6fbb623de53f6f364d352309d4094dd4194040a10fd51833e418d49"
   end
 
   resource "mdurl" do
