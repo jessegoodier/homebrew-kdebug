@@ -3,8 +3,8 @@ class Kdebug < Formula
 
   desc "Universal Kubernetes Debug Container Utility"
   homepage "https://github.com/jessegoodier/kdebug"
-  url "https://files.pythonhosted.org/packages/12/24/c49f8d466f4e878e92d301a526c96adbc0fd26de43823ed543e6f102bae1/kdebug-0.6.10.tar.gz"
-  sha256 "0b30ed2767077533b0566c51d7ceb5383a782db5614dae62f411cb56996fcab4"
+  url "https://files.pythonhosted.org/packages/40/93/bc077ecf993fb88840bad17aa4d3b36904adf854481844cf2edc4e84d597/kdebug-0.6.11.tar.gz"
+  sha256 "3a6ce9665a30d635e670895e1db2b63d90da4d793cc536737302e9888d130f4e"
   license "MIT"
 
   depends_on "python@3.13"
@@ -20,8 +20,8 @@ class Kdebug < Formula
   end
 
   resource "pygments" do
-    url "https://files.pythonhosted.org/packages/c3/b2/bc9c9196916376152d655522fdcebac55e66de6603a76a02bca1b6414f6c/pygments-2.20.0.tar.gz"
-    sha256 "6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f"
+    url "https://files.pythonhosted.org/packages/49/2e/ced460408999b33da6b31b0021b0f37d329e202d4169aeb164493778f25b/pygments-2.21.0.tar.gz"
+    sha256 "610ca751c9bc2492b38eb9a38a7fbc93edbbb2d7182edaf34e66ae493dee5c8c"
   end
 
   resource "rich" do
