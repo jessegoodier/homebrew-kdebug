@@ -9,8 +9,8 @@ on:
         description: 'Version to update to (leave empty for latest from PyPI)'
         required: false
         type: string
-  schedule:
-    - cron: '0 12 * * *'  # Daily at noon UTC
+  # schedule:
+  #   - cron: '0 12 * * *'  # Daily at noon UTC
 
 jobs:
   update-formula:
