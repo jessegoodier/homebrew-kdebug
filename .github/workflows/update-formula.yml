@@ -80,7 +80,7 @@ jobs:
 
       - name: Set up Homebrew
         if: steps.check-update.outputs.update-needed == 'true'
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
 
       - name: Set up Homebrew tap
         if: steps.check-update.outputs.update-needed == 'true'
